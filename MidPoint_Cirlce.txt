@@ -27,7 +27,7 @@ void midPointCircleAlgo()
 {
 	int x = 0;
 	int y = r;
-	float decision = 3- 2*r;
+	float decision = (5/4) - r;
 	plot(x, y);
 
 	while (y > x)

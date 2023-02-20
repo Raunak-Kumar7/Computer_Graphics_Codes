@@ -1,0 +1,144 @@
+
+
+#include<GL/glut.h>
+#include<stdlib.h>
+#include<stdio.h>
+#include <iostream>
+//float x1, x2, y11, y2;
+
+
+
+void plot_point(int x, int y, int xc, int yc)
+{
+	glBegin(GL_POINTS);
+	glVertex2i(xc + x, yc + y); //Adding Centre to each point to shift
+	glVertex2i(xc + x, yc - y);
+	glVertex2i(xc + y, yc + x);
+	glVertex2i(xc + y, yc - x);
+	glVertex2i(xc - x, yc - y);
+	glVertex2i(xc - y, yc - x);
+	glVertex2i(xc - x, yc + y);
+	glVertex2i(xc - y, yc + x);
+	glEnd();
+}
+
+void bresenham_circle(int r, int xc, int yc)
+{
+	int x = 0, y = r; //Initial point
+	float pk = (5.0 / 4.0) - r;
+
+	plot_point(x, y, xc, yc);
+	int k;
+
+	while (x < y)
+	{
+
+		if (pk < 0)
+			pk = pk + 4 * x + 6;
+		else
+		{
+			pk = pk + 4 * (x - y) + 10;
+			y = y - 1;
+		}
+		x = x + 1;
+		plot_point(x, y, xc, yc);
+	}
+}
+
+
+void line(int x1, int y11, int x2, int y2)
+{
+
+	//glColor3f(0.0, 1.0, 0.0);
+	float dy, dx, step, x, y, k, Xin, Yin;
+	dx = x2 - x1;
+	dy = y2 - y11;
+
+	if (abs(dx) > abs(dy))
+	{
+		step = abs(dx);
+	}
+	else
+		step = abs(dy);
+
+	Xin = dx / step;
+	Yin = dy / step;
+
+	x = x1;
+	y = y11;
+	glBegin(GL_POINTS);
+	glVertex2i(x, y);
+	glEnd();
+
+	for (k = 1; k <= step; k++)
+	{
+		x = x + Xin;
+		y = y + Yin;
+
+		glBegin(GL_POINTS);
+		glVertex2i(x, y);
+		glEnd();
+	}
+	
+}
+void display()
+{
+	line(20,20,180,20);
+	line(20,20,20,120);
+	line(80,20,80,120);
+	line(20,120,80,120);
+	line(20,120,50,160);
+	line(50,160,80,120);
+	line(50,160,150,160);
+	line(150,160,180,120);
+	line(180,120,180,20);
+	line(80,120,180,120);
+	line(40,20,40,80);
+	line(40,80,60,80);
+	line(60,80,60,20);
+	int radius1 = 15;
+	int xc = 130, yc = 70; //Centre
+	bresenham_circle(radius1,xc,yc);
+	glFlush();
+}
+void init(void)
+{
+	glClearColor(0.0f, 0.0f, 1.0f, 0.0f);
+	glColor3f(0, 0, 0);
+	glPointSize(3);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluOrtho2D(0, 200, 0, 200);
+}
+
+int main(int argc, char** argv) {
+	/*printf("Enter the value of x1 : ");
+	scanf("%f", &x1);
+	printf("Enter the value of y1 : ");
+	scanf("%f", &y1);
+	printf("Enter the value of x2 : ");
+	scanf("%f", &x2);
+	printf("Enter the value of y2 : ");
+	scanf("%f", &y2);
+	*/
+	/*x1 = 95.0;
+	y11 = 95.0;
+	x2 = -95.0;
+	y2 = -95.0;
+	*/
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+	glutInitWindowSize(500, 500);
+	glutInitWindowPosition(200, 200);
+	glutCreateWindow("DDA Line Algo");
+	init();
+	glutDisplayFunc(display);
+
+	glutMainLoop();
+
+	return 0;
+}
+
+
+

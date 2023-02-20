@@ -1,0 +1,91 @@
+#include <stdio.h>
+#include <math.h>
+#include <GL/glut.h>
+
+//int xc = 320, yc = 240; //Centre
+
+void plot_point(int x, int y, int xc, int yc, int flag)
+{
+    glBegin(GL_POINTS);
+    glColor3f(0, 0, 0);
+    if(flag==-1) //if smilie we dont want points above x axis
+    {
+        glVertex2i(xc + x, yc + y); //Adding Centre to each point to shift
+        glVertex2i(xc + y, yc + x);
+        glVertex2i(xc - x, yc + y);
+        glVertex2i(xc - y, yc + x);
+
+    }
+    
+    glVertex2i(xc + x, yc - y);
+    
+    glVertex2i(xc + y, yc - x);
+    glVertex2i(xc - x, yc - y);
+    glVertex2i(xc - y, yc - x);
+   
+    glEnd();
+}
+
+void bresenham_circle(int r, int xc, int yc, int flag)
+{
+    int x = 0, y = r; //Initial point
+    float pk = (5.0 / 4.0) - r;
+    glColor3f(0, 0, 0);
+    plot_point(x, y, xc, yc,flag);
+    //int k;
+
+    while (x < y)
+    {
+
+        if (pk < 0)
+            pk = pk + 4 * x + 6;
+        else
+        {
+            pk = pk + 4 * (x - y) + 10;
+            y = y - 1;
+        }
+        x = x + 1;
+        plot_point(x, y, xc, yc,flag);
+    }
+    glFlush();
+}
+
+void display_circles(void)
+{
+
+    int radius1 = 100;
+    int radius2 = 10;
+    int radius3 = 60;
+    bresenham_circle(radius1,320,240,-1); //flag to plot entire circle
+    bresenham_circle(radius2,280,280,-1);
+    bresenham_circle(radius2,360,280,-1);
+    bresenham_circle(radius2, 320, 240,-1);
+    bresenham_circle(radius3, 320, 240,0);
+
+}
+
+void Init()
+{
+    /* Set clear color to white */
+    glClearColor(1.0, 1.0, 0.0, 0);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    /* Set fill color to black */
+   // glColor3f(0.0, 0.0, 0.0);
+
+    gluOrtho2D(0, 640, 0, 480);
+}
+int main(int argc, char** argv)
+{
+
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+    glutInitWindowPosition(0, 0);
+    glutInitWindowSize(640, 480);
+    glutCreateWindow("bresenham_circle");
+    Init();
+    glutDisplayFunc(display_circles);
+
+    glutMainLoop();
+}
